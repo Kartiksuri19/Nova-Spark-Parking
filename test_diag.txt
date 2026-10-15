@@ -1,0 +1,2 @@
+const fs = require('fs');
+// Let's create an injector or runner that collects all console logs and errors
