@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- Apple iOS Full-Screen Web Clip & PWA Standalone Capability -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nova Spark">
+  <meta name="application-name" content="Nova Spark">
+  <meta name="theme-color" content="#0B0B0D">
+
+  <title>Nova Spark Parking — Jammu</title>
+
+  <!-- Apple Touch & PWA App Icons -->
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="manifest" href="manifest.json">
+
+
+  <!-- Inter font (system-font fallback for non-Apple) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/leaflet.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       OPTICAL PIPELINE FILTERS & LUCIDE VECTOR ICON LIBRARY
+       ═══════════════════════════════════════════════════════════ -->
+  <svg class="optical-filters-svg" style="position:absolute;width:0;height:0;pointer-events:none;" aria-hidden="true">
+    <defs>
+      <!-- Snell's Law Refraction Optical Filter (IOR = 1.50) -->
+      <filter id="liquid-refraction" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+
+      <!-- Lucide Vector Icons (Zero Emojis System) -->
+      <g id="icon-car">
+        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+        <circle cx="7" cy="17" r="2"/>
+        <path d="M9 17h6"/>
+        <circle cx="17" cy="17" r="2"/>
+      </g>
+
+      <g id="icon-moto">
+        <!-- Rear & Front Motorcycle Wheels -->
+        <circle cx="5" cy="16.5" r="3.5"/>
+        <circle cx="19" cy="16.5" r="3.5"/>
+        <!-- Front Fork & Handlebars -->
+        <path d="M19 16.5L16 6h-2.5"/>
+        <!-- Fuel Tank & Contoured Saddle -->
+        <path d="M5 12h3c1.2-2 4-2 5.5 0l2.5 3"/>
+        <!-- Rear Swingarm Frame -->
+        <path d="M5 16.5L9 11"/>
+        <!-- Visible Internal Combustion Engine Block & Cooling Fin -->
+        <rect x="9.5" y="12.5" width="4" height="4" rx="0.8"/>
+        <line x1="10" y1="14.5" x2="13" y2="14.5"/>
+        <!-- Exhaust Pipe -->
+        <path d="M13.5 16.5h3.5"/>
+      </g>
+
+      <g id="icon-motorcycle">
+        <!-- Rear & Front Motorcycle Wheels -->
+        <circle cx="5" cy="16.5" r="3.5"/>
+        <circle cx="19" cy="16.5" r="3.5"/>
+        <!-- Front Fork & Handlebars -->
+        <path d="M19 16.5L16 6h-2.5"/>
+        <!-- Fuel Tank & Contoured Saddle -->
+        <path d="M5 12h3c1.2-2 4-2 5.5 0l2.5 3"/>
+        <!-- Rear Swingarm Frame -->
+        <path d="M5 16.5L9 11"/>
+        <!-- Visible Internal Combustion Engine Block & Cooling Fin -->
+        <rect x="9.5" y="12.5" width="4" height="4" rx="0.8"/>
+        <line x1="10" y1="14.5" x2="13" y2="14.5"/>
+        <!-- Exhaust Pipe -->
+        <path d="M13.5 16.5h3.5"/>
+      </g>
+
+      <g id="icon-ev">
+        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+        <circle cx="7" cy="17" r="2"/>
+        <path d="M9 17h6"/>
+        <circle cx="17" cy="17" r="2"/>
+        <path d="M13 2l-2 5h3l-2 5"/>
+      </g>
+
+      <g id="icon-ev-car">
+        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/>
+        <circle cx="7" cy="17" r="2"/>
+        <path d="M9 17h6"/>
+        <circle cx="17" cy="17" r="2"/>
+        <path d="M12 2l-2 4h3l-2 4"/>
+      </g>
+
+      <g id="icon-escooty">
+        <circle cx="6" cy="18" r="3"/>
+        <circle cx="18" cy="18" r="3"/>
+        <path d="M6 18h4l3-9h4"/>
+        <path d="M15 9h3"/>
+        <path d="M11 2l-1.5 3h2.5l-1.5 3"/>
+      </g>
+
+      <g id="icon-bicycle">
+        <circle cx="18.5" cy="17.5" r="3.5"/>
+        <circle cx="5.5" cy="17.5" r="3.5"/>
+        <circle cx="15" cy="5" r="1"/>
+        <path d="M12 17.5V14l-3-3 4-3 2 3h2"/>
+      </g>
+
+      <g id="icon-satellite">
+        <path d="M13 7 9 3 5 7l4 4"/>
+        <path d="m17 11 4 4-4 4-4-4"/>
+        <path d="m8 12 4 4 6-6-4-4Z"/>
+        <path d="m16 8 3-3"/>
+        <path d="M9 21a6 6 0 0 0-6-6"/>
+      </g>
+
+      <g id="icon-shield">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </g>
+
+      <g id="icon-route">
+        <circle cx="6" cy="19" r="3"/>
+        <path d="M9 19h8.5a4.5 4.5 0 0 0 0-9H11a4.5 4.5 0 0 1 0-9H18"/>
+      </g>
+
+      <g id="icon-lock">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </g>
+
+      <g id="icon-moon">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </g>
+
+      <g id="icon-sun">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3"/>
+        <line x1="12" y1="21" x2="12" y2="23"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+        <line x1="1" y1="12" x2="3" y2="12"/>
+        <line x1="21" y1="12" x2="23" y2="12"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+      </g>
+
+      <g id="icon-star">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </g>
+
+      <g id="icon-check">
+        <polyline points="20 6 9 17 4 12"/>
+      </g>
+    </defs>
+  </svg>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 1 · HOME / MAP VIEW  (The Discovery Layer)
+       ═══════════════════════════════════════════════════════════ -->
+  <section id="screen-home" class="screen active">
+
+    <!-- Full-bleed map base layer -->
+    <div id="map-container"></div>
+
+    <!-- ── Soft Top Blending Scrim Gradient ──────────────────── -->
+    <div class="home-top-scrim"></div>
+
+    <!-- ── Floating Top Glass Header (Search + Live Wallet Balance) ── -->
+    <div class="home-top-header">
+      <div class="glass-search-bar liquid-glass squircle-24">
+        <div class="search-icon" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <input type="text" class="search-input" size="1" placeholder="Search parking, areas…" aria-label="Search parking">
+        <button class="search-clear spring-btn" id="searchClearBtn" type="button" aria-label="Clear search" hidden>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Home Screen Live Wallet Balance Pill -->
+      <button class="home-wallet-pill liquid-glass squircle-24 spring-btn" id="homeWalletBtn" aria-label="Wallet Balance">
+        <div class="hwp-chip">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="5" width="20" height="14" rx="3"/>
+            <line x1="2" y1="10" x2="22" y2="10"/>
+          </svg>
+        </div>
+        <div class="hwp-text">
+          <span class="hwp-sub">Nova Pay</span>
+          <span class="hwp-val" id="homeWalletVal">₹1,250</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- ── Quick-Filter Pills (Unified 4-Vehicle System · Smooth Scroll) ── -->
+    <div class="filter-pills" id="filterPillsTrack">
+      <button class="pill pill-veh pill-car spring-btn" data-filter="car">
+        <svg class="pill-v-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-car"/></svg>
+        <span>Cars</span>
+      </button>
+      <button class="pill pill-veh pill-moto spring-btn" data-filter="bike">
+        <svg class="pill-v-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-moto"/></svg>
+        <span>Bikes / 2W</span>
+      </button>
+      <button class="pill pill-veh pill-ev spring-btn" data-filter="ev">
+        <svg class="pill-v-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-ev"/></svg>
+        <span>EV Charging</span>
+      </button>
+      <button class="pill pill-veh carplay-pill spring-btn" id="carplayToggle">
+        <svg class="pill-v-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-car"/></svg>
+        <span>In-Car</span>
+      </button>
+      <button class="pill pill-veh pill-bicycle spring-btn" data-filter="bicycle">
+        <svg class="pill-v-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-bicycle"/></svg>
+        <span>Bicycles</span>
+      </button>
+      <button class="pill pill-veh pill-mega spring-btn" data-filter="megahub">
+        <svg class="pill-v-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24M14.83 9.17l4.24-4.24M14.83 14.83l4.24 4.24M9.17 14.83l-4.24 4.24"/></svg>
+        <span>Mega Hubs</span>
+      </button>
+      <button class="pill spring-btn" id="satelliteToggle">
+        <svg class="pill-v-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-satellite"/></svg>
+        <span>Satellite</span>
+      </button>
+      <button class="pill spring-btn" data-filter="price">Under ₹25/hr</button>
+    </div>
+
+    <!-- ── CarPlay / Android Auto In-Car HUD ─────────────────── -->
+    <div id="carplayDashboard" class="carplay-hud liquid-glass squircle-24" style="display:none;">
+      <div class="hud-top-bar">
+        <div class="hud-status">
+          <span class="hud-car-badge">CarPlay Connected</span>
+          <span class="hud-dot plusLighter"></span>
+          <span class="hud-net">5G GPS Active</span>
+        </div>
+        <button class="glass-close-btn spring-btn hud-close-circle" id="carplayCloseBtn" type="button" aria-label="Exit In-Car Mode" title="Exit In-Car Mode">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="hud-main-card">
+        <div class="hud-badge-vacant plusLighter">Verified Vacant Driveway</div>
+        <h2 class="hud-spot-title" id="hudSpotTitle">Canal Road &amp; Science College Hub</h2>
+        <p class="hud-spot-sub" id="hudSpotSub">Canal Road, Near Science College, Jammu • 3 min away (1.5 km)</p>
+
+        <div class="hud-metrics">
+          <div class="hud-metric liquid-glass squircle-g2">
+            <span class="hud-m-val" id="hudPrice">₹25/hr</span>
+            <span class="hud-m-lbl">Rate</span>
+          </div>
+          <div class="hud-metric liquid-glass squircle-g2">
+            <span class="hud-m-val" id="hudEta">3 min</span>
+            <span class="hud-m-lbl">ETA</span>
+          </div>
+          <div class="hud-metric liquid-glass squircle-g2">
+            <span class="hud-m-val" id="hudDist">1.5 km</span>
+            <span class="hud-m-lbl">Distance</span>
+          </div>
+        </div>
+
+        <a class="hud-nav-btn spring-btn squircle-18" id="hudNavAction" href="https://www.google.com/maps/dir/?api=1&destination=32.7268,74.8432" target="_blank" rel="noopener">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+          </svg>
+          <span>Start Turn-by-Turn GPS</span>
+        </a>
+
+        <div class="hud-quick-actions">
+          <button class="hud-qa-btn spring-btn squircle-12" id="hudQuickBookBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Reserve 2h</span>
+          </button>
+          <a class="hud-qa-btn spring-btn squircle-12" href="tel:+919419123456">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+            <span>Call Host</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ Bottom Sheet / Desktop Left Floating Drawer ════════════ -->
+    <div id="booking-sheet" class="bottom-sheet liquid-glass is-minimized">
+
+      <!-- Drag handle (36px x 5px) -->
+      <div class="sheet-handle-area" id="sheetHandle"><div class="sheet-handle"></div></div>
+
+      <!-- Persistent Bar Header (Dock state toggle & info) -->
+      <div class="sheet-bar-header" id="sheetBarHeader">
+        <div class="sbh-info">
+          <span class="sbh-status-dot"></span>
+          <div class="sbh-text-wrap">
+            <span class="sbh-title" id="sbhTitle">27 Prime Hubs Available</span>
+            <span class="sbh-sub" id="sbhSub">Jammu City · from ₹5/hr</span>
+          </div>
+        </div>
+        <div class="sbh-actions">
+          <button class="sheet-toggle-btn spring-btn" id="sheetToggleBtn" aria-label="Toggle Driveways Sheet">
+            <span class="stb-chevron" id="stbChevron" aria-hidden="true"><svg width="10" height="9" viewBox="0 0 10 9" fill="currentColor"><path d="M5 1.5L9 7.5H1L5 1.5Z"/></svg></span>
+            <span class="stb-label" id="stbLabel">Open Spots</span>
+          </button>
+          <button class="glass-close-btn spring-btn" id="sheetCloseBtn" type="button" aria-label="Close parking availability panel">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ·· PEEK STATE — nearby spots list (NO duplicate title) ··· -->
+      <div class="sheet-peek" id="sheetPeek">
+        <div class="spots-scroll" id="spotsList"><!-- JS populates 68px rows --></div>
+      </div>
+
+      <!-- ·· DETAIL STATE — single-spot booking ·············· -->
+      <div class="sheet-detail" id="sheetDetail" style="display:none">
+
+        <!-- Top Navigation Bar in Detail Drawer -->
+        <div class="detail-nav-bar">
+          <button class="back-btn spring-btn" id="sheetBackBtn" type="button" aria-label="Back to map and spots">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+            <span>Back</span>
+          </button>
+        </div>
+
+        <!-- Header Block with 22.37% Squircle P Icon -->
+        <div class="detail-header">
+          <div class="detail-thumb squircle-g2" id="detailThumb">
+            <span class="detail-p-letter">P</span>
+          </div>
+          <div class="detail-title-block">
+            <h2 class="detail-name" id="detailName">Canal Road &amp; Science College Hub</h2>
+            <p  class="detail-addr" id="detailAddr">Canal Road, Near Science College, Jammu</p>
+            <div class="detail-stars">
+              <svg class="star-icon" width="16" height="16" viewBox="0 0 24 24" fill="#FF9F0A" stroke="#FF9F0A" stroke-width="1.5"><use href="#icon-star"/></svg>
+              <span class="star-rating-val" id="detailStarVal">4.9</span>
+              <span class="star-count" id="detailCount">(79)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Responsive Vehicle Category Selector (Equal Minmax Grid) -->
+        <div class="veh-choice-selector" id="vehChoiceSelector">
+          <button type="button" class="vcs-card active spring-btn" data-veh="car" id="vcsChoiceCar">
+            <div class="vcs-card-top">
+              <div class="vcs-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-car"/></svg>
+              </div>
+              <div class="vcs-price" id="vcsCarPrice">₹25/hr</div>
+            </div>
+            <div class="vcs-meta">
+              <span class="vcs-label">Car Parking</span>
+              <span class="vcs-avail" id="vcsCarAvail">38 Spots Vacant • ₹25/hr</span>
+            </div>
+          </button>
+
+          <button type="button" class="vcs-card spring-btn" data-veh="bike" id="vcsChoiceBike">
+            <div class="vcs-card-top">
+              <div class="vcs-icon vcs-bike-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-moto"/></svg>
+              </div>
+              <div class="vcs-price" id="vcsBikePrice">₹10/hr</div>
+            </div>
+            <div class="vcs-meta">
+              <span class="vcs-label">Bike / 2-Wheeler</span>
+              <span class="vcs-avail" id="vcsBikeAvail">75 Spots Vacant • ₹10/hr</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- 2D Architectural Parking Bay Schematic Card (Clean Top-Down Vector) -->
+        <div class="bay-2d-box driveway-3d-box liquid-glass squircle-24">
+          <div class="bay-2d-header">
+            <div class="bay-2d-badge plusLighter">
+              <span class="bay-2d-live-pulse plusLighter"></span>
+              <span>2D PARKING BAY ARCHITECTURE</span>
+            </div>
+            <div class="bay-2d-dim" id="d3dDim">5.5m × 2.8m • Clearance 2.6m</div>
+          </div>
+          <div class="bay-2d-stage">
+            <!-- Architectural Dimension Rulers -->
+            <div class="bay-2d-dim-top">
+              <span class="dim-tick-l"></span>
+              <span class="dim-line-h"></span>
+              <span class="dim-val-h" id="bayDimW">2.8m Bay Width</span>
+              <span class="dim-line-h"></span>
+              <span class="dim-tick-r"></span>
+            </div>
+            <div class="bay-2d-dim-left">
+              <span class="dim-tick-t"></span>
+              <span class="dim-line-v"></span>
+              <span class="dim-val-v" id="bayDimL">5.5m</span>
+              <span class="dim-line-v"></span>
+              <span class="dim-tick-b"></span>
+            </div>
+
+            <!-- Parking Bay Floor -->
+            <div class="bay-2d-floor" id="bay2dFloor">
+              <!-- Architectural CAD Blueprint Grid -->
+              <div class="bay-2d-grid"></div>
+
+              <!-- Yellow/White Parking Line Stripes -->
+              <div class="bay-2d-stripe stripe-l"></div>
+              <div class="bay-2d-stripe stripe-r"></div>
+
+              <!-- Rubber Wheel Stop Curb -->
+              <div class="bay-2d-curb"></div>
+
+              <!-- Center Bay Stamp -->
+              <div class="bay-2d-stamp" id="d3dSlotNum">CAR BAY #1</div>
+
+              <!-- 2D Animated Laser Radar Scanner Beam -->
+              <div class="bay-2d-scanner-beam"></div>
+
+              <!-- 2D Top-Down Vehicle Vector View (Injected dynamically by JS) -->
+              <div class="bay-2d-vehicle-holo" id="d3dVehicleHolo">
+                <!-- Top-down vector car/bike/cycle -->
+              </div>
+            </div>
+
+            <!-- Verification Clearance Status Pill -->
+            <div class="bay-2d-status-badge plusLighter" id="d3dFitBadge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block; vertical-align:middle; margin-right:4px;">
+                <use href="#icon-check"/>
+              </svg>
+              <span>Verified SUV &amp; Sedan Bay</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Column Quick Stats -->
+        <div class="detail-metrics">
+          <div class="metric liquid-glass squircle-g2">
+            <span class="m-val" id="mDist">1.5 km</span>
+            <span class="m-lbl">DISTANCE</span>
+          </div>
+          <div class="metric liquid-glass squircle-g2">
+            <span class="m-val" id="mPrice">₹25/hr</span>
+            <span class="m-lbl">PRICE</span>
+          </div>
+          <div class="metric liquid-glass squircle-g2">
+            <span class="m-val" id="mType">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><use href="#icon-car"/></svg>
+              <span>Car Bay</span>
+            </span>
+            <span class="m-lbl">TYPE</span>
+          </div>
+        </div>
+
+        <!-- Feature Tags with Lucide Vectors (ZERO EMOJIS) -->
+        <div class="detail-tags" id="detailTags">
+          <!-- Populated by JS with Lucide vector chips -->
+        </div>
+
+        <!-- Verified Host Card (68px Apple Row) -->
+        <div class="detail-host liquid-glass squircle-g2 row-68">
+          <div class="host-avatar squircle-g2" id="hostAvatar">CR</div>
+          <div class="host-text">
+            <div class="host-name" id="hostName">Priya &amp; Vikram D.</div>
+            <div class="host-sub">
+              <span>Verified Host • 4.9</span>
+              <svg class="host-star-mini" width="12" height="12" viewBox="0 0 24 24" fill="#FF9F0A" stroke="#FF9F0A" stroke-width="1.5" style="display:inline-block; vertical-align:middle; margin:0 1px;"><use href="#icon-star"/></svg>
+              <span>(120 reviews)</span>
+            </div>
+          </div>
+          <div class="host-verified-badge plusLighter">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- iOS Segmented Duration Control with Sliding Liquid Glass Pill -->
+        <div class="duration-picker">
+          <h4>Select Duration</h4>
+          <div class="dur-options-track" id="durTrack">
+            <div class="dur-active-pill" id="durActivePill"></div>
+            <button class="dur-btn spring-btn" data-hrs="1">1 hr</button>
+            <button class="dur-btn spring-btn active" data-hrs="2">2 hrs</button>
+            <button class="dur-btn spring-btn" data-hrs="4">4 hrs</button>
+            <button class="dur-btn spring-btn" data-hrs="8">8 hrs</button>
+          </div>
+        </div>
+
+        <!-- Live Invoice Checkout Summary -->
+        <div class="booking-summary liquid-glass squircle-18">
+          <div class="sum-row"><span>Parking (2 hrs)</span><span id="sumSub">₹50</span></div>
+          <div class="sum-row"><span>Service Fee</span><span id="sumFee">₹5</span></div>
+          <div class="sum-divider"></div>
+          <div class="sum-row total"><span>Total</span><span id="sumTotal">₹55</span></div>
+        </div>
+
+        <!-- Primary CTA with Specular Sheen & Tactile Physics -->
+        <button class="cta-btn liquid-glass squircle-18 spring-btn" id="bookNowBtn">
+          <span class="cta-label plusLighter" id="ctaLabel">Book Now — ₹55</span>
+          <div class="cta-sheen-highlight"></div>
+        </button>
+
+      </div><!-- /sheet-detail -->
+    </div><!-- /bottom-sheet -->
+
+    <!-- ── Recenter FAB (Apple Liquid Glass GPS Reticle) ────────── -->
+    <button class="recenter-fab liquid-glass spring-btn" id="recenterBtn" aria-label="Re-center map on your location">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3.5"/>
+        <line x1="12" y1="2" x2="12" y2="6"/>
+        <line x1="12" y1="18" x2="12" y2="22"/>
+        <line x1="2" y1="12" x2="6" y2="12"/>
+        <line x1="18" y1="12" x2="22" y2="12"/>
+      </svg>
+    </button>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 2 · ACTIVE PARKING SESSION  (The Status Layer)
+       ═══════════════════════════════════════════════════════════ -->
+  <section id="screen-session" class="screen">
+    <div class="screen-bg session-bg"></div>
+    <div class="screen-scroll">
+
+      <header class="screen-hdr"><h1 class="large-title">Active Session</h1></header>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptySession">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="2">
+          <rect x="10" y="22" width="60" height="36" rx="8"/><circle cx="28" cy="54" r="7"/><circle cx="52" cy="54" r="7"/>
+        </svg>
+        <h3>No Active Session</h3>
+        <p>Book a parking spot from the Explore tab</p>
+        <button class="cta-btn spring-btn squircle" id="findParkingBtn" style="margin-top: 18px; width: 180px; height: 46px; font-size: 15px;">
+          <span class="cta-label">Find Parking</span>
+        </button>
+      </div>
+
+      <!-- Active state (hidden until a booking is placed) -->
+      <div class="session-live" id="sessionLive" style="display:none">
+        <div class="session-col-timer">
+          <!-- Countdown ring -->
+          <div class="timer-wrap">
+            <svg class="timer-svg" viewBox="0 0 200 200">
+              <circle class="ring-bg"   cx="100" cy="100" r="88"/>
+              <circle class="ring-fill" cx="100" cy="100" r="88" id="ringFill"/>
+            </svg>
+            <div class="timer-inner">
+              <div class="timer-val" id="timerVal">01:58:32</div>
+              <div class="timer-lbl">Remaining</div>
+            </div>
+          </div>
+
+          <!-- Digital pass -->
+          <div class="pass-card liquid-glass squircle">
+            <div class="pass-hdr">
+              <span class="pass-title">Digital Entry Pass</span>
+              <span class="pass-badge">ACTIVE</span>
+            </div>
+            <div class="qr-box squircle" id="qrBox"><!-- JS generates pattern --></div>
+            <div class="pass-id" id="passId">NSPK-2026-JMU-4829</div>
+          </div>
+        </div>
+
+        <div class="session-col-info">
+          <!-- Info card -->
+          <div class="session-card liquid-glass squircle">
+            <div class="sc-name"   id="scName">Sharma Residence Driveway</div>
+            <div class="sc-addr"   id="scAddr">42 Gandhi Nagar, Jammu</div>
+            <div class="sc-meta">
+              <div class="sc-mi"><span class="sc-ml">Started</span><span class="sc-mv" id="scStart">10:30 AM</span></div>
+              <div class="sc-mi"><span class="sc-ml">Ends At</span><span class="sc-mv" id="scEnd">12:30 PM</span></div>
+              <div class="sc-mi"><span class="sc-ml">Spot #</span><span class="sc-mv" id="scSpot">A-12</span></div>
+            </div>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="session-actions">
+            <button class="sa-btn nav-sa liquid-glass squircle spring-btn" id="navBtn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+              <span>Navigate</span>
+            </button>
+            <button class="sa-btn ext-sa liquid-glass squircle spring-btn" id="extBtn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              </svg>
+              <span>Extend</span>
+            </button>
+            <button class="sa-btn end-sa liquid-glass squircle spring-btn" id="endBtn">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+              <span>End</span>
+            </button>
+          </div>
+        </div>
+      </div><!-- /session-live -->
+    </div><!-- /screen-scroll -->
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 3 · USER PROFILE & SETTINGS
+       ═══════════════════════════════════════════════════════════ -->
+  <section id="screen-profile" class="screen">
+    <div class="screen-bg profile-bg"></div>
+    <div class="screen-scroll">
+
+      <header class="screen-hdr"><h1 class="large-title">Profile</h1></header>
+
+      <!-- Desktop Two-Column Responsive Settings Architecture -->
+      <div class="profile-desktop-grid">
+        <!-- Left Column: User Profile, Wallet & Appearance -->
+        <div class="profile-col-left">
+          <!-- User card -->
+          <div class="user-card liquid-glass squircle">
+            <div class="uc-top">
+              <div class="uc-avatar" id="ucUserAvatar"><span>KS</span></div>
+              <div class="uc-info">
+                <div class="uc-name-row">
+                  <h2 id="ucUserName">Kartik Suri</h2>
+                  <span class="uc-verified-badge" title="Verified Jammu Mobility ID">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    Verified
+                  </span>
+                </div>
+                <div class="uc-contact-row">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  <span id="ucUserEmail">kartiksuri2006@gmail.com</span>
+                </div>
+                <div class="uc-contact-row">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  <span id="ucUserPhone">+91 91039 15235</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Wallet -->
+          <div class="wallet-card liquid-glass squircle">
+            <div class="wc-top"><span class="wc-label">Wallet Balance</span><span class="wc-badge">Nova Pay</span></div>
+            <div class="wc-bal">₹1,250</div>
+            <button class="wc-add spring-btn squircle">+ Add Money</button>
+          </div>
+
+          <!-- Dedicated Map Engine & Provider Selection Card (Google Map Priority #1 vs Free Map) -->
+          <div class="profile-map-card liquid-glass squircle" id="profileMapCard">
+            <div class="pmc-top">
+              <div class="pmc-icon-wrap">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                  <line x1="8" y1="2" x2="8" y2="18"/>
+                  <line x1="16" y1="6" x2="16" y2="22"/>
+                </svg>
+              </div>
+              <div class="pmc-info">
+                <span class="pmc-title">Map Provider</span>
+                <span class="pmc-badge" id="pmcStatusBadge">Google Maps (Priority #1)</span>
+              </div>
+            </div>
+            <div class="pmc-switch-group" role="group" aria-label="Map Engine Selector">
+              <button type="button" class="pmc-btn active spring-btn" id="profBtnGoogle" data-engine="google">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+                <span>Google Map</span>
+              </button>
+              <button type="button" class="pmc-btn spring-btn" id="profBtnFree" data-engine="free">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                </svg>
+                <span>Free Map</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Vehicles, Bookings & Settings -->
+        <div class="profile-col-right">
+          <!-- Vehicles -->
+          <div class="prof-section">
+            <h3 class="sec-title">My Vehicles</h3>
+            <div class="list-card liquid-glass squircle">
+              <div class="row-68">
+                <div class="prof-veh-icon squircle-g2" style="background:var(--vehicle-car-bg); color:var(--vehicle-car-fg);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-car"/></svg>
+                </div>
+                <div class="row-body"><div class="row-t">Hyundai Creta</div><div class="row-s">JK02 AB 1234 · White · Car</div></div>
+                <span class="badge-primary">Primary</span>
+              </div>
+              <div class="row-sep"></div>
+              <div class="row-68">
+                <div class="prof-veh-icon squircle-g2" style="background:var(--vehicle-car-bg); color:var(--vehicle-car-fg);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-car"/></svg>
+                </div>
+                <div class="row-body"><div class="row-t">Maruti Swift</div><div class="row-s">JK02 CD 5678 · Silver · Car</div></div>
+                <svg class="row-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="row-sep"></div>
+              <div class="row-68">
+                <div class="prof-veh-icon squircle-g2" style="background:var(--vehicle-moto-bg); color:var(--vehicle-moto-fg);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-moto"/></svg>
+                </div>
+                <div class="row-body"><div class="row-t">Honda Activa 6G</div><div class="row-s">JK02 EF 9012 · Blue · 2-Wheeler</div></div>
+                <svg class="row-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking History -->
+          <div class="prof-section">
+            <h3 class="sec-title">Recent Bookings</h3>
+            <div class="list-card liquid-glass squircle">
+              <div class="row-68">
+                <div class="row-icon ok">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9.5"/>
+                    <path d="M8.2 12.4l2.6 2.6 5.4-5.5"/>
+                  </svg>
+                </div>
+                <div class="row-body">
+                  <div class="row-t">Sharma Residence</div>
+                  <div class="row-s">
+                    <span>Oct 12 · 2 hrs · ₹65 · </span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin:0 2px;"><use href="#icon-car"/></svg>
+                    <span>Car</span>
+                  </div>
+                </div>
+                <span class="badge-ok">Completed</span>
+              </div>
+              <div class="row-sep"></div>
+              <div class="row-68">
+                <div class="row-icon ok">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#30D158" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9.5"/>
+                    <path d="M8.2 12.4l2.6 2.6 5.4-5.5"/>
+                  </svg>
+                </div>
+                <div class="row-body">
+                  <div class="row-t">Canal Road Garden</div>
+                  <div class="row-s">
+                    <span>Oct 10 · 3 hrs · ₹60 · </span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin:0 2px;"><use href="#icon-moto"/></svg>
+                    <span>2W</span>
+                  </div>
+                </div>
+                <span class="badge-ok">Completed</span>
+              </div>
+              <div class="row-sep"></div>
+              <div class="row-68">
+                <div class="row-icon cancel">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF453A" stroke-width="2.2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="9.5"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                  </svg>
+                </div>
+                <div class="row-body"><div class="row-t">Gandhi Nagar Spot</div><div class="row-s">Oct 8 · Cancelled · ₹0</div></div>
+                <span class="badge-cancel">Cancelled</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings & Preferences -->
+          <div class="prof-section">
+            <h3 class="sec-title">Settings &amp; Preferences</h3>
+            <div class="list-card liquid-glass squircle">
+              <!-- Map Engine Row: Google Map vs Free Map -->
+              <div class="row-52" id="mapEngineRow">
+                <div class="row-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                    <line x1="8" y1="2" x2="8" y2="18"/>
+                    <line x1="16" y1="6" x2="16" y2="22"/>
+                  </svg>
+                </div>
+                <div class="row-body">
+                  <div class="row-t">Map Engine</div>
+                  <div class="row-s" id="mebActiveBadge">Google Maps (Roadmap API)</div>
+                </div>
+                <div class="map-engine-segment" role="group" aria-label="Map Engine">
+                  <button type="button" class="mes-btn active" id="btnEngineGoogle">Google</button>
+                  <button type="button" class="mes-btn" id="btnEngineFree">Free</button>
+                </div>
+              </div>
+
+              <!-- Live Location (GPS) Mode Row -->
+              <div class="row-52">
+                <div class="row-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
+                  </svg>
+                </div>
+                <div class="row-body">
+                  <div class="row-t">Live Location (GPS)</div>
+                  <div class="row-s" id="gpsStatusLabel">Disabled · Tap to enable</div>
+                </div>
+                <label class="apple-switch" for="gpsToggleCheckbox">
+                  <input type="checkbox" id="gpsToggleCheckbox" aria-label="Toggle Live Location Mode">
+                  <span class="apple-switch-slider"></span>
+                </label>
+              </div>
+              <div class="row-sep"></div>
+
+              <div class="row-52" id="savedCardsRow" style="cursor:pointer;">
+                <div class="row-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></div>
+                <div class="row-body"><div class="row-t">Saved Cards &amp; UPI</div></div>
+                <svg class="row-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="row-sep"></div>
+
+              <!-- iOS & Mobile Full Screen App / Add to Home Screen -->
+              <div class="row-52" id="addToHomeScreenRow" style="cursor:pointer;">
+                <div class="row-icon" style="color:#0A84FF;">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="14" height="20" x="5" y="2" rx="3" ry="3"/>
+                    <path d="M12 18h.01"/>
+                  </svg>
+                </div>
+                <div class="row-body">
+                  <div class="row-t">Add to Home Screen (Full Screen)</div>
+                  <div class="row-s">iPhone Safari · Borderless Standalone App</div>
+                </div>
+                <svg class="row-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+              <div class="row-sep"></div>
+
+              <!-- Dedicated Help Center Row (Opens Chatbot) -->
+              <div class="row-52" id="helpCenterRow" style="cursor:pointer;">
+                <div class="row-icon help-chat-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                </div>
+                <div class="row-body">
+                  <div class="row-t">Help Center &amp; AI Assistant</div>
+                  <div class="row-s" id="helpCenterSub">Interactive Q&amp;A · Creator Details · Support</div>
+                </div>
+                <div class="hcr-badge" id="hcrBadge">Q&amp;A Online</div>
+                <svg class="row-chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+              </div>
+
+              <div class="row-sep"></div>
+
+              <!-- Apple iOS Centered Destructive Row: Sign Out -->
+              <div class="row-52 sign-out-row spring-btn" id="signOutRow" role="button" aria-label="Sign out or switch account" style="cursor:pointer;">
+                <div class="row-icon"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+                <div class="row-body"><div class="row-t danger">Sign Out</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Help & Developer FAQs Section -->
+          <div class="prof-section" id="profFaqSection">
+            <h3 class="sec-title">Help &amp; Developer FAQs</h3>
+            <div class="list-card liquid-glass squircle profile-faq-list">
+              <!-- Item 1: Creator & Brain -->
+              <details class="faq-item" open>
+                <summary class="faq-summary">
+                  <div class="faq-icon-wrap" style="background:rgba(0,113,227,0.12); color:var(--c-accent);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+                    </svg>
+                  </div>
+                  <div class="faq-sum-title">Who created Nova Spark Parking?</div>
+                  <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </summary>
+                <div class="faq-body">
+                  <p class="faq-desc">
+                    Conceived, architected, and coded by <strong>Kartik Suri</strong>—the deployer and brain behind this entire smart parking ecosystem.
+                  </p>
+                  <div class="faq-creds-box">
+                    <div class="fcb-row"><strong>Deployer:</strong> Kartik Suri <span class="badge-verified-tiny">✓ Verified</span></div>
+                    <div class="fcb-row"><strong>Phone:</strong> <a href="tel:+919103915235" class="fcb-link">+91 91039 15235</a> <span class="fcb-note">(Original)</span></div>
+                    <div class="fcb-row"><strong>Email:</strong> <a href="mailto:kartiksuri2006@gmail.com" class="fcb-link">kartiksuri2006@gmail.com</a> <span class="fcb-note">(Original)</span></div>
+                    <div class="fcb-row"><strong>Location:</strong> Jammu, Jammu &amp; Kashmir, India</div>
+                  </div>
+                  <div class="faq-actions-row">
+                    <a href="tel:+919103915235" class="faq-btn faq-btn-call">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      Call Kartik
+                    </a>
+                    <a href="mailto:kartiksuri2006@gmail.com?subject=Nova%20Spark%20Parking%20Inquiry" class="faq-btn faq-btn-mail">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                      Email Creator
+                    </a>
+                    <a href="https://wa.me/919103915235?text=Hi%20Kartik%2C%20I%20am%20interested%20in%20Nova%20Spark%20Parking" target="_blank" rel="noopener noreferrer" class="faq-btn faq-btn-wa">
+                      WhatsApp
+                    </a>
+                  </div>
+                </div>
+              </details>
+
+              <div class="row-sep"></div>
+
+              <!-- Item 2: Commercial Funding & Deployment -->
+              <details class="faq-item" open>
+                <summary class="faq-summary">
+                  <div class="faq-icon-wrap" style="background:rgba(52,199,89,0.12); color:#34C759;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                    </svg>
+                  </div>
+                  <div class="faq-sum-title">Commercial Deployment &amp; Funding (₹50k – ₹70k)</div>
+                  <svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </summary>
+                <div class="faq-body">
+                  <div class="faq-fund-banner">
+                    <span class="ffb-tag">Seed Funding Proposition</span>
+                    <span class="ffb-val">₹50,000 to ₹70,000</span>
+                    <span class="ffb-sub">Starting package under ₹1 Lakh for full production rollout</span>
+                  </div>
+                  <p class="faq-desc">
+                    Nova Spark Parking is engineered to transition into a complete, professional municipal deployment in the real world. A seed capital of <strong>₹50,000 to ₹70,000</strong> (starting package under <strong>₹1 Lakh</strong>) enables the full production development and on-ground deployment: high-speed cloud infrastructure, real-time wireless IoT bay occupancy sensors, ANPR camera sync, live UPI &amp; FASTag automated tolling, and municipal warden oversight. The entire build will work flawlessly in the real world.
+                  </p>
+                  <div class="faq-actions-row">
+                    <a href="tel:+919103915235" class="faq-btn faq-btn-fund">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      Call to Fund: +91 91039 15235
+                    </a>
+                    <a href="mailto:kartiksuri2006@gmail.com?subject=Investment%20%26%20Funding%20Proposal%20for%20Nova%20Spark%20Parking" class="faq-btn faq-btn-mail">
+                      Email Proposal
+                    </a>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <p class="app-ver">Nova Spark Parking v1.0.0</p>
+        </div><!-- /profile-col-right -->
+      </div><!-- /profile-desktop-grid -->
+    </div><!-- /screen-scroll -->
+  </section>
+
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HELP CENTER CHATBOT MODAL (Apple iOS Native Assistant)
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="helpChatbotModal" class="chatbot-modal-overlay">
+    <div class="chatbot-window liquid-glass squircle">
+      <!-- Chat Header -->
+      <div class="chatbot-header">
+        <div class="cb-agent-info">
+          <div class="cb-avatar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="cb-online-dot"></span>
+          </div>
+          <div class="cb-titles">
+            <span class="cb-name">Nova Assistant</span>
+            <span class="cb-status">Kartik Suri Project · Q&amp;A Concierge</span>
+          </div>
+        </div>
+        <div class="cb-header-right">
+          <span class="cb-engine-badge" id="cbEngineBadge">Q&amp;A Help</span>
+          <button type="button" class="cb-close-btn glass-close-btn spring-btn" id="cbCloseBtn" aria-label="Close Assistant">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Pills -->
+      <div class="cb-chips-bar" id="cbChipsBar">
+        <button type="button" class="cb-chip" data-cmd="Creator">💡 Meet the Creator</button>
+        <button type="button" class="cb-chip" data-cmd="Funding">💼 Fund Production (₹50k-70k)</button>
+        <button type="button" class="cb-chip" data-cmd="Google Key">🔑 Change Google Key</button>
+        <button type="button" class="cb-chip" data-cmd="Mega Hubs">🅿️ Mega Hubs</button>
+        <button type="button" class="cb-chip" data-cmd="Bicycle Parking">🚲 Bicycle Spots</button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="cb-messages" id="cbMessages">
+        <!-- Messages dynamically rendered here -->
+      </div>
+
+      <!-- Input Bar -->
+      <form class="cb-input-bar" id="cbForm">
+        <input type="text" id="cbInput" class="cb-input" placeholder="Ask a question, contact developer, or enter API key…" autocomplete="off" spellcheck="false">
+        <button type="submit" class="cb-send-btn" id="cbSendBtn" aria-label="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       TAB BAR
+       ═══════════════════════════════════════════════════════════ -->
+  <nav id="tab-bar" class="tab-bar liquid-glass">
+    <div class="tab-slider-pill" id="tabSliderPill"></div>
+    <button class="tab active" data-screen="screen-home">
+      <svg class="tab-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-8 9 8"/><path d="M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10"/></svg>
+      <span>Explore</span>
+    </button>
+    <button class="tab" data-screen="screen-session">
+      <svg class="tab-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg>
+      <span>Session</span>
+    </button>
+    <button class="tab" data-screen="screen-profile">
+      <svg class="tab-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       BOOKING CONFIRMATION OVERLAY
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="confirmOverlay" class="overlay">
+    <div class="confirm-card liquid-glass squircle">
+      <button class="glass-close-btn spring-btn overlay-close-btn" id="confirmCloseBtn" type="button" aria-label="Close confirmation">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="confirm-check">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="#34C759" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="32" cy="32" r="28" class="check-circle"/>
+          <path d="M20 32l8 8 16-16" class="check-path"/>
+        </svg>
+      </div>
+      <h2>Booking Confirmed!</h2>
+      <p>Your parking spot has been reserved</p>
+      <div class="confirm-rows">
+        <div class="cr"><span>Booking ID</span><span id="cfId">NSPK-2026-JMU-4829</span></div>
+        <div class="cr"><span>Duration</span><span id="cfDur">2 hours</span></div>
+        <div class="cr"><span>Total Paid</span><span id="cfTotal">₹65</span></div>
+      </div>
+      <button class="cta-btn spring-btn squircle" id="viewSessionBtn">
+        <span class="cta-label">View Session</span><div class="cta-shine"></div>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       APPLE iOS AUTHENTICATION / SIGNUP MODAL (Direct Body Level)
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="signupModal" class="ios-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="signupModalTitle">
+    <div class="ios-modal-scrim" id="signupModalScrim"></div>
+    <div class="ios-modal-sheet liquid-glass squircle-28">
+      <!-- iOS Drag Indicator Pill (mobile sheet grabber - visual bar removed, drag gesture preserved) -->
+      <div class="ios-sheet-grabber" id="signupSheetGrabber" aria-hidden="true"></div>
+
+      <!-- Circular Apple Close Button -->
+      <button type="button" class="glass-close-btn spring-btn ios-modal-close" id="signupCloseBtn" aria-label="Close authentication modal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <!-- Modal Header -->
+      <div class="ios-modal-header">
+        <div class="ios-auth-icon-wrap">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <h2 id="signupModalTitle" class="ios-modal-title">Nova Mobility Account</h2>
+        <p class="ios-modal-sub" id="signupModalSub">Live parking reservations, ANPR entry &amp; FASTag tolling</p>
+
+        <!-- iOS Segmented Control (Create Account / Sign In) -->
+        <div class="ios-segmented-control" role="tablist" id="authSegmentControl">
+          <div class="ios-seg-slider" id="authSegSlider"></div>
+          <button type="button" class="ios-seg-btn active spring-btn" id="btnAuthTabSignup" role="tab" aria-selected="true">
+            Create Account
+          </button>
+          <button type="button" class="ios-seg-btn spring-btn" id="btnAuthTabSignin" role="tab" aria-selected="false">
+            Sign In
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body Scrollable -->
+      <div class="ios-modal-scroll">
+        <!-- Quick Social Sign-In (Apple & Google) -->
+        <div class="ios-oauth-row">
+          <button type="button" class="ios-oauth-btn ios-btn-apple spring-btn" id="btnOAuthApple">
+            <svg class="ios-oauth-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.63 1.35-.57.65-.96 1.72-.82 2.74 1.01.08 2.05-.51 2.53-1.24z"/>
+            </svg>
+            <span>Apple</span>
+          </button>
+          <button type="button" class="ios-oauth-btn ios-btn-google spring-btn" id="btnOAuthGoogle">
+            <svg class="ios-oauth-icon" width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.67v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.16z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.36 7.34 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.94 0 12s.46 3.84 1.26 5.42l4.02-3.15z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.25 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+            </svg>
+            <span>Google</span>
+          </button>
+        </div>
+
+        <div class="ios-form-divider">
+          <span>or continue with details</span>
+        </div>
+
+        <!-- Form Inset Grouped Fields -->
+        <form id="signupForm" class="ios-form-wrapper" novalidate autocomplete="on">
+          <div class="ios-inset-group">
+            <!-- Full Name Field (Sign Up Mode) -->
+            <div class="ios-field-row" id="fieldRowName">
+              <label class="ios-field-label" for="inputAuthName">Full Name</label>
+              <div class="ios-input-wrap">
+                <svg class="ios-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+                <input type="text" id="inputAuthName" class="ios-input" placeholder="e.g. Kartik Suri" autocomplete="name" required>
+              </div>
+            </div>
+
+            <!-- Phone Number Field -->
+            <div class="ios-field-row" id="fieldRowPhone">
+              <label class="ios-field-label" for="inputAuthPhone">Mobile Number</label>
+              <div class="ios-input-wrap">
+                <span class="ios-country-prefix">+91</span>
+                <input type="tel" id="inputAuthPhone" class="ios-input" placeholder="91039 15235" autocomplete="tel" maxlength="10" required>
+              </div>
+            </div>
+
+            <!-- Email Field -->
+            <div class="ios-field-row" id="fieldRowEmail">
+              <label class="ios-field-label" for="inputAuthEmail">Email Address</label>
+              <div class="ios-input-wrap">
+                <svg class="ios-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <input type="email" id="inputAuthEmail" class="ios-input" placeholder="name@domain.com" autocomplete="email" required>
+              </div>
+            </div>
+
+            <!-- Vehicle Number Plate Field (Sign Up Mode) -->
+            <div class="ios-field-row" id="fieldRowPlate">
+              <label class="ios-field-label" for="inputAuthPlate">Primary Vehicle Plate</label>
+              <div class="ios-input-wrap">
+                <span class="ios-plate-badge">JK</span>
+                <input type="text" id="inputAuthPlate" class="ios-input ios-plate-input" placeholder="02 AB 1234" autocomplete="off" maxlength="12" spellcheck="false">
+              </div>
+            </div>
+
+            <!-- Vehicle Category Picker (Sign Up Mode) -->
+            <div class="ios-field-row" id="fieldRowVehType">
+              <label class="ios-field-label">Vehicle Type</label>
+              <div class="ios-veh-type-selector" id="authVehTypeSelector">
+                <button type="button" class="ivt-chip active spring-btn" data-type="car">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-car"/></svg>
+                  <span>Car</span>
+                </button>
+                <button type="button" class="ivt-chip spring-btn" data-type="bike">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-moto"/></svg>
+                  <span>2-Wheeler</span>
+                </button>
+                <button type="button" class="ivt-chip spring-btn" data-type="ev">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-ev"/></svg>
+                  <span>EV</span>
+                </button>
+                <button type="button" class="ivt-chip spring-btn" data-type="bicycle">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><use href="#icon-bicycle"/></svg>
+                  <span>Bicycle</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Password / Passcode Field -->
+            <div class="ios-field-row" id="fieldRowPassword">
+              <label class="ios-field-label" for="inputAuthPass">Security PIN / Password</label>
+              <div class="ios-input-wrap">
+                <svg class="ios-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input type="password" id="inputAuthPass" class="ios-input" placeholder="••••••••" autocomplete="current-password" required>
+              </div>
+            </div>
+          </div><!-- /ios-inset-group -->
+
+          <!-- Primary Submit Action Button -->
+          <button type="submit" class="ios-btn-primary spring-btn" id="btnAuthSubmit">
+            <span class="ios-btn-text" id="btnAuthSubmitText">Create Account</span>
+            <svg class="ios-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </form>
+
+        <!-- Terms & Privacy Footnote -->
+        <p class="ios-modal-footnote">
+          Secured by <strong>Jammu Smart Mobility Authority</strong> · 256-bit encryption. By continuing, you accept the Nova Spark <a href="#" class="ios-link" id="authTermsLink">Terms of Service</a>.
+        </p>
+      </div><!-- /ios-modal-scroll -->
+    </div><!-- /ios-modal-sheet -->
+  </div><!-- /signupModal -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       APPLE iOS ADD TO HOME SCREEN / FULL SCREEN GUIDE MODAL
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="pwaGuideModal" class="ios-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="pwaGuideTitle">
+    <div class="ios-modal-scrim" id="pwaGuideScrim"></div>
+    <div class="ios-modal-sheet liquid-glass squircle-28" style="max-width:440px;">
+      <div class="ios-sheet-grabber" aria-hidden="true"></div>
+      
+      <button type="button" class="glass-close-btn spring-btn ios-modal-close" id="pwaGuideCloseBtn" aria-label="Close guide modal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="ios-modal-header" style="text-align:center; padding-top:16px;">
+        <div class="ios-auth-icon-wrap" style="background:rgba(10,132,255,0.15); color:#0A84FF; margin:0 auto 12px; width:56px; height:56px; border-radius:18px;">
+          <img src="apple-touch-icon.png" alt="Nova Spark Icon" style="width:52px; height:52px; border-radius:14px; box-shadow:0 4px 14px rgba(0,0,0,0.35);">
+        </div>
+        <h2 id="pwaGuideTitle" class="ios-modal-title" style="font-size:20px; font-weight:700;">Open Full Screen on iPhone</h2>
+        <p class="ios-modal-sub" style="font-size:13px; color:var(--apple-text-secondary); margin-top:4px;">
+          Add Nova Spark to your iPhone Home Screen for a borderless, native app experience without browser URL bars.
+        </p>
+      </div>
+
+      <div class="ios-modal-scroll" style="padding:16px 20px 24px;">
+        <div class="ios-inset-group" style="background:rgba(255,255,255,0.05); border-radius:16px; padding:14px 16px; display:flex; flex-direction:column; gap:16px; border:1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex; align-items:flex-start; gap:14px;">
+            <div style="background:rgba(10,132,255,0.18); color:#0A84FF; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">1</div>
+            <div style="flex:1;">
+              <div style="font-size:14px; font-weight:600; color:#fff;">Tap Safari's Share Button</div>
+              <div style="font-size:12.5px; color:rgba(255,255,255,0.7); margin-top:2px;">In Safari toolbar at the bottom, tap the Share icon (<svg style="vertical-align:middle; display:inline-block;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>).</div>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:flex-start; gap:14px;">
+            <div style="background:rgba(10,132,255,0.18); color:#0A84FF; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">2</div>
+            <div style="flex:1;">
+              <div style="font-size:14px; font-weight:600; color:#fff;">Select "Add to Home Screen"</div>
+              <div style="font-size:12.5px; color:rgba(255,255,255,0.7); margin-top:2px;">Scroll down and tap <strong>Add to Home Screen</strong> (<svg style="vertical-align:middle; display:inline-block;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>).</div>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:flex-start; gap:14px;">
+            <div style="background:rgba(48,209,88,0.18); color:#30D158; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;">3</div>
+            <div style="flex:1;">
+              <div style="font-size:14px; font-weight:600; color:#fff;">Tap "Add" &amp; Launch</div>
+              <div style="font-size:12.5px; color:rgba(255,255,255,0.7); margin-top:2px;">Tap <strong>Add</strong> in the top-right. Launch from your Home Screen to enjoy 100% borderless full screen!</div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="ios-btn-primary spring-btn" id="btnPwaGotIt" style="margin-top:16px; width:100%; height:46px; border-radius:14px; font-size:15px; font-weight:600; background:#0A84FF; color:#fff; border:none; cursor:pointer;">
+          Got it
+        </button>
+      </div>
+    </div>
+  </div>
+
+<script src="js/leaflet.js"></script>
+<script src="js/spring.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
